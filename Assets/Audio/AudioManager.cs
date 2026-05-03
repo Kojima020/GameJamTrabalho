@@ -1,31 +1,40 @@
+using System.Collections;
 using UnityEngine;
 
 public class AudioManager : MonoBehaviour
 {
     [Header("----Audio Source ----")]
-    [SerializeField] AudioSource musicSource;
-    [SerializeField] AudioSource SFXSource;
+    [SerializeField] private AudioSource welcomeSource;
+    [SerializeField] private AudioSource musicSource;
 
     [Header("----Audio Clips ----")]
-    public AudioClip background;
-    public AudioClip death;
-    public AudioClip checkpoint;
-    public AudioClip wallTouch;
-    public AudioClip grapplingGun;
-    public AudioClip grapplingHook;
-    public AudioClip throwHat;
-
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [SerializeField] private AudioClip welcome;
+    [SerializeField] private AudioClip background;
+    [SerializeField] private AudioClip death;
+    [SerializeField] private AudioClip checkpoint;
+    [SerializeField] private AudioClip wallTouch;
+    [SerializeField] private AudioClip grapplingGun;
+    [SerializeField] private AudioClip grapplingHook;
+    [SerializeField] private AudioClip throwHat;
+    
+    
+    public void GameStart()
     {
-        musicSource.clip = background;
         musicSource.Play();
+        StartCoroutine(StartLevel());
     }
 
-    // Update is called once per frame
-    void Update()
+    private IEnumerator StartLevel()
     {
+        musicSource.volume = 0;
+        for (float volume = 0; volume < 1; volume += Time.deltaTime * 0.5f)
+        {
+            musicSource.volume = volume;
+            welcomeSource.volume = 1f - volume;
+            yield return null;
+        }
         
+        musicSource.volume = 1;
+        welcomeSource.Stop();
     }
 }
