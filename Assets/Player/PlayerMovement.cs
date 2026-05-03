@@ -1,112 +1,119 @@
+using System.Collections;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [Header("Camera")]
+    private float yaw;
+    private float pitch;
+    [SerializeField] private bool isThirdPerson = true;
+    [SerializeField] private float sensitivity = 150f;
+    [SerializeField] private Transform mainCamera;
+    
     [Header("Movement")]
-    public float moveSpeed = 1.0f;
+    private Rigidbody rb;
+    private Vector3 moveInput;
+    [SerializeField] private float maxSpeed;
+    [SerializeField] private float jumpSpeed = 10f;
+    [SerializeField] private float airDamping = 3f;
+    [SerializeField] private float groundDamping = 10f;
 
-    public float groundDrag;
+    [Header("Jump")]
+    private bool isOnGround;
+    private bool isOnSurface;
+    private bool canJump;
+    private bool jumpRequest;
+    private Coroutine onAirC;
+    
 
-    public float jumpForce;
-    public float jumpCooldown;
-    public float airMultiplier;
-    bool readyToJump;
-
-    [Header("Keybinds")]
-    public KeyCode jumpKey = KeyCode.Space;
-
-    [Header("GroundCheck")]
-    public float playerHeight;
-    public LayerMask whatIsGround;
-    bool grounded;
-
-    public Transform orientation;
-
-    float horizontalInput;
-    float verticalInput;
-
-    Vector3 moveDirection;
-
-    Rigidbody rb;
-
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Start()
     {
+        // mainCamera = transform.GetChild(0).transform;
+
         rb = GetComponent<Rigidbody>();
-        rb.freezeRotation = true;
-        readyToJump = true;
+        
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
-    private void MyInput() 
+    private void Update()
     {
-        horizontalInput = Input.GetAxisRaw("Horizontal");
-        verticalInput = Input.GetAxisRaw("Vertical");
+        if (Input.GetKeyDown(KeyCode.Space) && canJump) jumpRequest = true;
+        
+        yaw += Input.GetAxis("Mouse X") * sensitivity * Time.deltaTime; // Y-axis rotation
+        pitch += Input.GetAxis("Mouse Y") * sensitivity * Time.deltaTime; // X-axis rotation
+        pitch = Mathf.Clamp(pitch, -45f, 70f);
 
-        if (Input.GetKey(jumpKey) && readyToJump && grounded) 
+        transform.rotation = Quaternion.Euler(0f, yaw, 0f);
+        mainCamera.localRotation = Quaternion.Euler(-pitch, 0f, 0f);
+
+        Vector3 forward = transform.forward; // Z‑axis of the player
+        Vector3 right = transform.right; // X‑axis of the player
+
+        moveInput = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
+        moveInput = (forward * moveInput.z + right * moveInput.x).normalized;
+    }
+    
+    // handle ground jumping
+    private void FixedUpdate()
+    {
+        rb.AddForce(maxSpeed * moveInput, ForceMode.VelocityChange);
+        
+        if (isOnGround & jumpRequest)
         {
-            readyToJump = false;
-            Jump();
-            Invoke(nameof(ResetJump), jumpCooldown);
+            jumpRequest = canJump = false;
+            rb.linearDamping = airDamping;
+            rb.AddForce(jumpSpeed * Vector3.up, ForceMode.VelocityChange);
         }
     }
 
-    private void MovePlayer() 
+    private IEnumerator Gravity()
     {
-        //move direction
-        moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
-
-        if (grounded)
-            rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
-
-        else if(!grounded)
-            rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
-    }
-    private void SpeedControl() 
-    {
-        Vector3 flatVel = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
-        
-        //limit velocity
-        if(flatVel.magnitude > moveSpeed) 
+        while (!isOnGround || !isOnSurface)
         {
-
-            Vector3 limitedVel = flatVel.normalized * moveSpeed;
-            rb.angularVelocity = new Vector3(limitedVel.x, rb.linearVelocity.y, limitedVel.z);
-        
+            yield return new WaitForFixedUpdate();
+            rb.AddForce(10 * maxSpeed * Vector3.down, ForceMode.Acceleration);
         }
-
+        onAirC = null;
     }
-
-    private void Jump() 
+    
+    private void OnCollisionEnter(Collision col)
     {
-        rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
-
-        rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
-    }
-
-    private void ResetJump() 
-    {
-        readyToJump = true;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        grounded = Physics.Raycast(transform.position, Vector3.up, playerHeight * 0.5f + 0.2f, whatIsGround);
-
-        print(grounded);
-
-        MyInput();
-        SpeedControl();
-
-        if (grounded)
-            rb.linearDamping = groundDrag;
+        // either on the ground, or on a surface
+        if (col.gameObject.CompareTag("Ground"))
+        {
+            canJump = isOnGround = true;
+            rb.linearDamping = groundDamping;
+        }
         else
-            rb.linearDamping = 0;
-
+        {
+            isOnSurface = true;
+        }
+        
+        maxSpeed = rb.linearDamping / 5;
     }
 
-    private void FixedUpdate() {
-        MovePlayer();
+    private void OnCollisionExit(Collision col)
+    {
+        if (col.gameObject.CompareTag("Ground")) // if left the ground
+        {
+            isOnGround = canJump = false;
+            if (!isOnSurface) Float(); // and if is not touching a wall, then float
+        }
+        
+        else if (col.gameObject.CompareTag("Wall")) // if un-touched the wall
+        {
+            isOnSurface = false;
+            if(!isOnGround) Float(); // and if is not on the ground, then float
+        }
+        
+        maxSpeed = rb.linearDamping / 5;
+    }
+
+    private void Float()
+    {
+        // isOnGround = isOnSurface = false;
+        rb.linearDamping = airDamping;
+        onAirC ??= StartCoroutine(Gravity());
     }
 }
