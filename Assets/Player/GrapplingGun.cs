@@ -2,11 +2,14 @@ using UnityEngine;
 
 public class GrapplingGun : MonoBehaviour
 {
+    [SerializeField] private AudioSource cableSFX;
+    [SerializeField] private AudioSource pullSFX;
+    
     private LineRenderer lr;
     private Vector3 grapplePoint;
 
     //Ver como o Kojima fez com layers no codigo de movimento - dia 3
-    public LayerMask whatIsGrappleable;
+    // public LayerMask whatIsGrappleable;
 
     //Lembrar de mudar isso depois para private, ver como o Kojima faz
     private PlayerMovement pm;
@@ -30,17 +33,18 @@ public class GrapplingGun : MonoBehaviour
     private void Update() 
     {
 
-        if (Input.GetMouseButtonDown(0)) 
+        if (Input.GetMouseButtonDown(0))
         {
             StartGrapple();
+            cableSFX.Play();
         }
         else if (grappling && Input.GetMouseButtonUp(0)) {
             StopGrapple();
         }
 
         if (Input.GetMouseButton(1) && grappling) {
-            print("OLHA EU AI");
             ExecuteGrapple();
+            pullSFX.Play();
         }
 
     }
