@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
     [Header("Canvas GO")]
     [SerializeField] private GameObject welcomeGO;
     [SerializeField] private GameObject victoryGO;
+    [SerializeField] private GameObject victorytextGO;
     [SerializeField] private GameObject gameOverGO;
     [SerializeField] private GameObject hudGO;
 
@@ -24,18 +25,18 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space)) Win();
         if (Input.GetKeyDown(KeyCode.Escape)) Application.Quit();
         
         time -= Time.deltaTime;
         stopwatch.text = TimeSpan.FromSeconds(time).ToString(@"mm\:ss");
     }
 
-    private void Win()
+    public void Win()
     {
         Time.timeScale = 0;
         hudGO.SetActive(false);
         victoryGO.SetActive(true);
+        victorytextGO.SetActive(true);
         victory.text += "\n" + (300f - time).ToString("F2");
     }
 

@@ -25,7 +25,8 @@ public class PlayerMovement : MonoBehaviour
     private bool canJump;
     private bool jumpRequest;
     private Coroutine onAirC;
-    
+
+    [SerializeField] private GameManager gm;
 
     private void Start()
     {
@@ -139,6 +140,12 @@ public class PlayerMovement : MonoBehaviour
         return velocityXZ + velocityY;
     }
 
+    private void OnTriggerEnter(Collider other) {
+        if (other.tag == "Win") {
+            print("WIN");
+            gm.Win();
+        }
+    }
 
 
 }
