@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     [Header("Canvas GO")]
     [SerializeField] private GameObject welcomeGO;
     [SerializeField] private GameObject victoryGO;
+    [SerializeField] private GameObject victorytextGO;
     [SerializeField] private GameObject gameOverGO;
     [SerializeField] private GameObject hudGO;
 
@@ -38,6 +39,7 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 0;
         hudGO.SetActive(false);
         victoryGO.SetActive(true);
+        victorytextGO.SetActive(true);
         victory.text += "\n" + (300f - time).ToString("F2");
     }
 

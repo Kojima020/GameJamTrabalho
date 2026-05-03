@@ -44,8 +44,11 @@ public class GrapplingGun : MonoBehaviour
 
         if (Input.GetMouseButton(1) && grappling) {
             ExecuteGrapple();
+        }
+        if (Input.GetMouseButtonDown(1) && grappling) {
             pullSFX.Play();
         }
+     
 
     }
 
