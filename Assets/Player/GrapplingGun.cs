@@ -18,7 +18,7 @@ public class GrapplingGun : MonoBehaviour
    
     public float overshootYAxis;
 
-    private float maxDistance = 300f;
+    private float maxDistance = 30f;
     private bool grappling;
 
     private void Awake() 
