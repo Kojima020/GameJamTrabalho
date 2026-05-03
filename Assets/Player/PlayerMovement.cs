@@ -146,12 +146,4 @@ public class PlayerMovement : MonoBehaviour
         return velocityXZ + velocityY;
     }
 
-    private void OnTriggerEnter(Collider other) {
-        if (other.tag == "Win") {
-            print("WIN");
-            gm.Win();
-        }
-    }
-
-
 }

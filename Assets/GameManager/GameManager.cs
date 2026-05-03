@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    [SerializeField] private Transform playerCamera;
+    [SerializeField] private Transform victoryCamera;
     [SerializeField] private AudioManager audioManager;
     
     [Header("Canvas GO")]
@@ -30,17 +32,22 @@ public class GameManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape)) Application.Quit();
         
         time -= Time.deltaTime;
-        stopwatch.text = TimeSpan.FromSeconds(time).ToString(@"mm\:ss");
+        stopwatch.text = TimeSpan.FromSeconds(time).ToString(@"mm\:ss\.f");
         if (time <= 0) GameOver();
     }
 
     public void Win()
     {
         Time.timeScale = 0;
+
+        playerCamera.parent = null;
+        playerCamera.position = victoryCamera.position;
+        playerCamera.rotation = victoryCamera.rotation;
+        
         hudGO.SetActive(false);
         victoryGO.SetActive(true);
         victorytextGO.SetActive(true);
-        victory.text += " " + TimeSpan.FromSeconds(300f-time).ToString(@"mm\:ss");
+        victory.text += "\n" + TimeSpan.FromSeconds(300f-time).ToString(@"mm\:ss\.ff");
     }
 
     private void GameOver()
