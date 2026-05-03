@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [SerializeField] private Transform spawnPoint;
+    
     [Header("Camera")]
     private float yaw;
     private float pitch;
@@ -38,6 +40,7 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space) && canJump) jumpRequest = true;
+        if (Input.GetKeyDown(KeyCode.R)) transform.position = spawnPoint.position;
         
         yaw += Input.GetAxis("Mouse X") * sensitivity * Time.deltaTime; // Y-axis rotation
         pitch += Input.GetAxis("Mouse Y") * sensitivity * Time.deltaTime; // X-axis rotation
