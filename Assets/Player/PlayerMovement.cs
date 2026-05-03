@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [SerializeField] private GameManager gameManager;
     [SerializeField] private Transform spawnPoint;
     
     [Header("Camera")]
@@ -82,8 +83,13 @@ public class PlayerMovement : MonoBehaviour
     
     private void OnCollisionEnter(Collision col)
     {
+        if (col.gameObject.CompareTag("Victory"))
+        {
+            gameManager.Win();
+        }
+        
         // either on the ground, or on a surface
-        if (col.gameObject.CompareTag("Ground"))
+        else if (col.gameObject.CompareTag("Ground"))
         {
             canJump = isOnGround = true;
             rb.linearDamping = groundDamping;
@@ -127,7 +133,7 @@ public class PlayerMovement : MonoBehaviour
         rb.linearVelocity = CalculateJumpVelocity(transform.position, targetPosition, trajectoryHeight);
     }
 
-    public Vector3 CalculateJumpVelocity(Vector3 startPoint, Vector3 endPoint, float trajectoryHeight) 
+    private Vector3 CalculateJumpVelocity(Vector3 startPoint, Vector3 endPoint, float trajectoryHeight) 
     {
         float gravity = Physics.gravity.y;
         float displacementY = endPoint.y - startPoint.y;

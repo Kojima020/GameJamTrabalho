@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    [SerializeField] private AudioManager audioManager;
+    
     [Header("Canvas GO")]
     [SerializeField] private GameObject welcomeGO;
     [SerializeField] private GameObject victoryGO;
@@ -24,14 +26,14 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space)) Win();
         if (Input.GetKeyDown(KeyCode.Escape)) Application.Quit();
         
         time -= Time.deltaTime;
         stopwatch.text = TimeSpan.FromSeconds(time).ToString(@"mm\:ss");
+        if (time <= 0) GameOver();
     }
 
-    private void Win()
+    public void Win()
     {
         Time.timeScale = 0;
         hudGO.SetActive(false);
@@ -39,9 +41,16 @@ public class GameManager : MonoBehaviour
         victory.text += "\n" + (300f - time).ToString("F2");
     }
 
+    private void GameOver()
+    {
+        Time.timeScale = 0;
+        gameOverGO.SetActive(true);
+    }
+
     private IEnumerator Welcome()
     {
         yield return new WaitUntil(() => Input.anyKeyDown);
+        audioManager.GameStart();
         welcomeGO.SetActive(false);
         hudGO.SetActive(true);
         Time.timeScale = 1;
