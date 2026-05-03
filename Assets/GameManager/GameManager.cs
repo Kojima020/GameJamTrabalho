@@ -40,7 +40,7 @@ public class GameManager : MonoBehaviour
         hudGO.SetActive(false);
         victoryGO.SetActive(true);
         victorytextGO.SetActive(true);
-        victory.text += "\n" + (300f - time).ToString("F2");
+        victory.text += " " + TimeSpan.FromSeconds(300f-time).ToString(@"mm\:ss");
     }
 
     private void GameOver()
