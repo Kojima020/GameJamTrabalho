@@ -6,7 +6,6 @@ public class PlayerMovement : MonoBehaviour
     [Header("Camera")]
     private float yaw;
     private float pitch;
-    [SerializeField] private bool isThirdPerson = true;
     [SerializeField] private float sensitivity = 150f;
     [SerializeField] private Transform mainCamera;
     
@@ -42,7 +41,7 @@ public class PlayerMovement : MonoBehaviour
         
         yaw += Input.GetAxis("Mouse X") * sensitivity * Time.deltaTime; // Y-axis rotation
         pitch += Input.GetAxis("Mouse Y") * sensitivity * Time.deltaTime; // X-axis rotation
-        pitch = Mathf.Clamp(pitch, -45f, 70f);
+        pitch = Mathf.Clamp(pitch, -90f, 90f);
 
         transform.rotation = Quaternion.Euler(0f, yaw, 0f);
         mainCamera.localRotation = Quaternion.Euler(-pitch, 0f, 0f);

@@ -261,7 +261,6 @@ GameObject:
   m_Component:
   - component: {fileID: 271487937}
   - component: {fileID: 271487936}
-  - component: {fileID: 271487935}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -269,18 +268,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &271487935
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 271487934}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01614664b831546d2ae94a42149d80ac, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.UI.InputSystemUIInputModule
 --- !u!114 &271487936
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2016,13 +2003,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 6416852693858055725, guid: 29e2f997cf5303920b3af45565acf238, type: 3}
-      propertyPath: far clip plane
-      value: 30000
+    - target: {fileID: 647819897782223054, guid: 29e2f997cf5303920b3af45565acf238, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.8
       objectReference: {fileID: 0}
-    - target: {fileID: 6416852693858055725, guid: 29e2f997cf5303920b3af45565acf238, type: 3}
-      propertyPath: near clip plane
-      value: 0.1
+    - target: {fileID: 647819897782223054, guid: 29e2f997cf5303920b3af45565acf238, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6961987337609306517, guid: 29e2f997cf5303920b3af45565acf238, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 8178540788305159971, guid: 29e2f997cf5303920b3af45565acf238, type: 3}
       propertyPath: m_Name
