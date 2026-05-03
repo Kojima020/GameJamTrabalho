@@ -1,0 +1,49 @@
+using System;
+using System.Collections;
+using TMPro;
+using UnityEngine;
+
+public class GameManager : MonoBehaviour
+{
+    [Header("Canvas GO")]
+    [SerializeField] private GameObject welcomeGO;
+    [SerializeField] private GameObject victoryGO;
+    [SerializeField] private GameObject gameOverGO;
+    [SerializeField] private GameObject hudGO;
+
+    [Header("Timer")]
+    private float time = 300f;
+    [SerializeField] private TextMeshProUGUI stopwatch;
+    [SerializeField] private TextMeshProUGUI victory;
+
+    private void Start()
+    {
+        Time.timeScale = 0;
+        StartCoroutine(Welcome());
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space)) Win();
+        if (Input.GetKeyDown(KeyCode.Escape)) Application.Quit();
+        
+        time -= Time.deltaTime;
+        stopwatch.text = TimeSpan.FromSeconds(time).ToString(@"mm\:ss");
+    }
+
+    private void Win()
+    {
+        Time.timeScale = 0;
+        hudGO.SetActive(false);
+        victoryGO.SetActive(true);
+        victory.text += "\n" + (300f - time).ToString("F2");
+    }
+
+    private IEnumerator Welcome()
+    {
+        yield return new WaitUntil(() => Input.anyKeyDown);
+        welcomeGO.SetActive(false);
+        hudGO.SetActive(true);
+        Time.timeScale = 1;
+    }
+}
