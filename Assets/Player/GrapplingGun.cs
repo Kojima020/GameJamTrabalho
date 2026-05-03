@@ -34,12 +34,13 @@ public class GrapplingGun : MonoBehaviour
         {
             StartGrapple();
         }
-        else if (Input.GetMouseButton(1) && grappling) {
-            print("OLHA EU AI");
-            ExecuteGrapple();
-        }
         else if (grappling && Input.GetMouseButtonUp(0)) {
             StopGrapple();
+        }
+
+        if (Input.GetMouseButton(1) && grappling) {
+            print("OLHA EU AI");
+            ExecuteGrapple();
         }
 
     }
